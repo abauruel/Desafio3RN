@@ -1,6 +1,13 @@
 import "./config/ReactotronConfig";
 import React, { Component } from "react";
-import { Text, StyleSheet, View, Modal, Alert } from "react-native";
+import {
+  Text,
+  StyleSheet,
+  View,
+  TextInput,
+  TouchableOpacity
+} from "react-native";
+import Modal from "react-native-modal";
 
 import styles from "./styles";
 
@@ -16,10 +23,31 @@ Mapbox.setAccessToken(
 );
 export default class App extends Component {
   state = {
-    modalVisible: false
+    modalVisible: false,
+    latitude: 0,
+    longitude: 0
   };
 
-  addUser = () => {};
+  addUser = () => {
+    this.setState({
+      modalVisible: true
+    });
+  };
+
+  handleClick = async e => {
+    const { geometry } = e;
+    await this.setState({
+      latitude: geometry.coordinates[1],
+      longitude: geometry.coordinates[0],
+      modalVisible: true
+    });
+  };
+  CloseModal() {
+    this.setState({
+      modalVisible: false
+    });
+  }
+
   renderAnnotations() {
     return (
       <Mapbox.PointAnnotation
@@ -44,13 +72,16 @@ export default class App extends Component {
         showUserLocation
         styleURL={Mapbox.StyleURL.Dark}
         onLongPress={this.addUser}
+        onPress={this.handleClick}
       >
+        <View>
+          <Modal isVisible={this.state.modalVisible}>
+            <View tyle={{ flexDirection: "row", height: 100, padding: 20 }}>
+              <Text>{this.state.latitude}</Text>
+            </View>
+          </Modal>
+        </View>
         {this.renderAnnotations()}
-        <Modal visible={this.state.modalVisible}>
-          <View>
-            <Text>Hello MOdal</Text>
-          </View>
-        </Modal>
       </Mapbox.MapView>
     );
   }
