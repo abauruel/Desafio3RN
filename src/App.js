@@ -34,11 +34,16 @@ export default class App extends Component {
     });
   };
 
-  handleClick = async e => {
+  handleClick = e => {
+    /*
     const { geometry } = e;
     await this.setState({
       latitude: geometry.coordinates[1],
       longitude: geometry.coordinates[0],
+      modalVisible: true
+    });
+    */
+    this.setState({
       modalVisible: true
     });
   };
@@ -62,6 +67,30 @@ export default class App extends Component {
       </Mapbox.PointAnnotation>
     );
   }
+  renderModal() {
+    <Modal isVisible={this.state.modalVisible} style={styles.container}>
+      <View style={styles.containerForm}>
+        <View style={styles.containerTitulo}>
+          <Text style={styles.titulo}>Adicionar novo local</Text>
+        </View>
+        <TextInput
+          style={styles.inputForm}
+          placeholder="insira o usuário do Github"
+        />
+        <View style={styles.buttons}>
+          <TouchableOpacity style={styles.confirmar}>
+            <Text style={styles.btOK}>OK</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.cancelar}
+            onPress={() => this.setState({ modalVisible: false })}
+          >
+            <Text style={styles.btCancelar}>Cancelar</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>;
+  }
 
   render() {
     return (
@@ -71,16 +100,8 @@ export default class App extends Component {
         style={styles.container}
         showUserLocation
         styleURL={Mapbox.StyleURL.Dark}
-        onLongPress={this.addUser}
-        onPress={this.handleClick}
+        onLongPress={this.handleClick}
       >
-        <View>
-          <Modal isVisible={this.state.modalVisible}>
-            <View tyle={{ flexDirection: "row", height: 100, padding: 20 }}>
-              <Text>{this.state.latitude}</Text>
-            </View>
-          </Modal>
-        </View>
         {this.renderAnnotations()}
       </Mapbox.MapView>
     );
